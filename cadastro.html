@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - EletroMob</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .left-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 3rem;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .left-panel h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .left-panel p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .benefits {
+            margin-top: 2rem;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .benefit-icon {
+            font-size: 1.5rem;
+        }
+
+        .right-panel {
+            padding: 3rem;
+        }
+
+        .form-container {
+            max-width: 400px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .tab {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            background: none;
+            color: #666;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-top: 0.2rem;
+        }
+
+        .checkbox-group label {
+            font-weight: normal;
+            font-size: 0.9rem;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            color: #999;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+
+        .social-login {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .social-btn {
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .social-btn:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .form-tab {
+            display: none;
+        }
+
+        .form-tab.active {
+            display: block;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .left-panel {
+                display: none;
+            }
+
+            .right-panel {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="logo">⚡ EletroMob</div>
+            <h2>Bem-vindo à Revolução da Mobilidade Urbana</h2>
+            <p>Junte-se a milhares de usuários que já descobriram uma forma mais inteligente, sustentável e econômica de se locomover pela cidade.</p>
+            
+            <div class="benefits">
+                <div class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span>Sem mensalidades ou taxas ocultas</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span>Veículos elétricos 100% sustentáveis</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span>Disponível 24/7 em toda a cidade</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span>Seguro e manutenção incluídos</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="form-container">
+                <h1>Comece Agora</h1>
+                <p class="subtitle">Crie sua conta ou faça login</p>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('login')">Entrar</button>
+                    <button class="tab" onclick="switchTab('signup')">Criar Conta</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="form-tab active" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">E-mail</label>
+                        <input type="email" id="loginEmail" placeholder="seu@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Senha</label>
+                        <input type="password" id="loginPassword" placeholder="Digite sua senha" required>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Lembrar de mim</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Entrar</button>
+
+                    <div class="divider">ou</div>
+
+                    <div class="social-login">
+                        <button type="button" class="social-btn" onclick="socialLogin('Google')">
+                            🔍 Continuar com Google
+                        </button>
+                        <button type="button" class="social-btn" onclick="socialLogin('Facebook')">
+                            📘 Continuar com Facebook
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Signup Form -->
+                <form id="signupForm" class="form-tab" onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label for="signupName">Nome Completo</label>
+                        <input type="text" id="signupName" placeholder="João Silva" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupEmail">E-mail</label>
+                        <input type="email" id="signupEmail" placeholder="seu@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupPhone">Telefone</label>
+                        <input type="tel" id="signupPhone" placeholder="(11) 99999-9999" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupCPF">CPF</label>
+                        <input type="text" id="signupCPF" placeholder="000.000.000-00" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupPassword">Senha</label>
+                        <input type="password" id="signupPassword" placeholder="Mínimo 6 caracteres" required minlength="6">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupConfirmPassword">Confirmar Senha</label>
+                        <input type="password" id="signupConfirmPassword" placeholder="Digite a senha novamente" required>
+                        <span class="error" id="passwordError">As senhas não coincidem</span>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="terms" required>
+                            <label for="terms">Aceito os <a href="#" style="color: #667eea;">Termos de Uso</a> e <a href="#" style="color: #667eea;">Política de Privacidade</a></label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Criar Conta</button>
+
+                    <div class="divider">ou</div>
+
+                    <div class="social-login">
+                        <button type="button" class="social-btn" onclick="socialLogin('Google')">
+                            🔍 Continuar com Google
+                        </button>
+                        <button type="button" class="social-btn" onclick="socialLogin('Facebook')">
+                            📘 Continuar com Facebook
+                        </button>
+                    </div>
+                </form>
+
+                <div class="back-link">
+                    <a href="eletromob.html">← Voltar para o início</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update forms
+            document.querySelectorAll('.form-tab').forEach(f => f.classList.remove('active'));
+            if (tab === 'login') {
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.getElementById('signupForm').classList.add('active');
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // Simulate login
+            console.log('Login:', { email, password });
+            alert('Login realizado com sucesso! Redirecionando para o mapa...');
+            window.location.href = 'mapa.html';
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const errorMsg = document.getElementById('passwordError');
+
+            if (password !== confirmPassword) {
+                errorMsg.style.display = 'block';
+                return;
+            } else {
+                errorMsg.style.display = 'none';
+            }
+
+            const formData = {
+                name: document.getElementById('signupName').value,
+                email: document.getElementById('signupEmail').value,
+                phone: document.getElementById('signupPhone').value,
+                cpf: document.getElementById('signupCPF').value,
+                password: password
+            };
+
+            console.log('Signup:', formData);
+            alert('Conta criada com sucesso! Redirecionando para o mapa...');
+            window.location.href = 'mapa.html';
+        }
+
+        function socialLogin(provider) {
+            alert(`Login com ${provider} será implementado em breve!`);
+        }
+
+        // Format CPF input
+        document.getElementById('signupCPF')?.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                e.target.value = value;
+            }
+        });
+
+        // Format phone input
+        document.getElementById('signupPhone')?.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                e.target.value = value;
+            }
+        });
+    </script>
+</body>
+</html>

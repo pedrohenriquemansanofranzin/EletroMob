@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Veículos - EletroMob</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .btn-logout {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        #map {
+            height: calc(100vh - 70px);
+            width: 100%;
+        }
+
+        .vehicle-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 400px;
+            width: 90%;
+            z-index: 1000;
+            display: none;
+        }
+
+        .vehicle-panel.active {
+            display: block;
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .vehicle-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .vehicle-panel h3 {
+            color: #667eea;
+            font-size: 1.3rem;
+        }
+
+        .close-panel {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .vehicle-details {
+            margin: 1rem 0;
+        }
+
+        .vehicle-detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .vehicle-detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #666;
+        }
+
+        .detail-value {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .btn-rent {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .btn-rent:hover {
+            transform: scale(1.02);
+        }
+
+        .filter-panel {
+            position: absolute;
+            top: 90px;
+            left: 20px;
+            background: white;
+            border-radius: 15px;
+            padding: 1rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .filter-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .filter-option input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.3rem 0;
+        }
+
+        .legend-icon {
+            font-size: 1.5rem;
+        }
+
+        .leaflet-popup-content-wrapper {
+            border-radius: 10px;
+        }
+
+        .popup-content {
+            text-align: center;
+        }
+
+        .popup-content h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .popup-battery {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+            color: #4CAF50;
+        }
+
+        .popup-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading.hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .filter-panel {
+                top: 80px;
+                left: 10px;
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .legend {
+                bottom: 10px;
+                right: 10px;
+                font-size: 0.9rem;
+            }
+
+            .vehicle-panel {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p style="margin-top: 1rem; color: #666;">Carregando mapa...</p>
+    </div>
+
+    <div class="header">
+        <div class="logo">⚡ EletroMob</div>
+        <div class="user-info">
+            <span id="userName">Usuário</span>
+            <div class="user-avatar">👤</div>
+            <button class="btn-logout" onclick="logout()">Sair</button>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="filter-panel">
+        <div class="filter-title">Filtrar Veículos</div>
+        <div class="filter-options">
+            <label class="filter-option">
+                <input type="checkbox" id="filterBike" checked onchange="filterVehicles()">
+                <span>🚲 Bicicletas</span>
+            </label>
+            <label class="filter-option">
+                <input type="checkbox" id="filterScooter" checked onchange="filterVehicles()">
+                <span>🛴 Patinetes</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-title">Legenda</div>
+        <div class="legend-item">
+            <span class="legend-icon">🚲</span>
+            <span>Bicicleta Elétrica</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-icon">🛴</span>
+            <span>Patinete Elétrico</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-icon">📍</span>
+            <span>Estação de Devolução</span>
+        </div>
+    </div>
+
+    <div id="vehiclePanel" class="vehicle-panel">
+        <div class="vehicle-panel-header">
+            <h3 id="panelTitle">Veículo Selecionado</h3>
+            <button class="close-panel" onclick="closePanel()">✕</button>
+        </div>
+        <div class="vehicle-details" id="vehicleDetails"></div>
+        <button class="btn-rent" onclick="rentVehicle()">Alugar Agora</button>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let map;
+        let markers = [];
+        let selectedVehicle = null;
+
+        const vehicles = [
+            { id: 1, type: 'bike', lat: -23.5505, lng: -46.6333, battery: 95, price: 5.00 },
+            { id: 2, type: 'scooter', lat: -23.5515, lng: -46.6343, battery: 80, price: 4.00 },
+            { id: 3, type: 'bike', lat: -23.5525, lng: -46.6353, battery: 100, price: 5.00 },
+            { id: 4, type: 'scooter', lat: -23.5535, lng: -46.6323, battery: 65, price: 4.00 },
+            { id: 5, type: 'bike', lat: -23.5545, lng: -46.6313, battery: 88, price: 5.00 },
+            { id: 6, type: 'scooter', lat: -23.5495, lng: -46.6303, battery: 92, price: 4.00 },
+            { id: 7, type: 'bike', lat: -23.5485, lng: -46.6363, battery: 78, price: 5.00 },
+            { id: 8, type: 'scooter', lat: -23.5555, lng: -46.6373, battery: 85, price: 4.00 },
+        ];
+
+        const stations = [
+            { name: 'Estação Centro', lat: -23.5505, lng: -46.6333 },
+            { name: 'Estação Paulista', lat: -23.5615, lng: -46.6560 },
+            { name: 'Estação Vila Madalena', lat: -23.5449, lng: -46.6890 },
+        ];
+
+        function initMap() {
+            map = L.map('map').setView([-23.5505, -46.6333], 14);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            addVehicles();
+            addStations();
+
+            document.getElementById('loading').classList.add('hidden');
+        }
+
+        function addVehicles() {
+            vehicles.forEach(vehicle => {
+                const icon = vehicle.type === 'bike' ? '🚲' : '🛴';
+                const name = vehicle.type === 'bike' ? 'Bicicleta Elétrica' : 'Patinete Elétrico';
+
+                const customIcon = L.divIcon({
+                    html: `<div style="font-size: 2rem;">${icon}</div>`,
+                    className: 'vehicle-marker',
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 40]
+                });
+
+                const marker = L.marker([vehicle.lat, vehicle.lng], { icon: customIcon })
+                    .addTo(map)
+                    .on('click', () => showVehicleInfo(vehicle));
+
+                marker.bindPopup(`
+                    <div class="popup-content">
+                        <h4>${icon} ${name}</h4>
+                        <div class="popup-battery">
+                            <span>🔋 ${vehicle.battery}%</span>
+                        </div>
+                        <p><strong>R$ ${vehicle.price.toFixed(2)}</strong> / 15 min</p>
+                    </div>
+                `);
+
+                markers.push({ marker, vehicle });
+            });
+        }
+
+        function addStations() {
+            stations.forEach(station => {
+                const customIcon = L.divIcon({
+                    html: `<div style="font-size: 2rem;">📍</div>`,
+                    className: 'station-marker',
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 40]
+                });
+
+                L.marker([station.lat, station.lng], { icon: customIcon })
+                    .addTo(map)
+                    .bindPopup(`
+                        <div class="popup-content">
+                            <h4>📍 ${station.name}</h4>
+                            <p>Estação de devolução</p>
+                        </div>
+                    `);
+            });
+        }
+
+        function showVehicleInfo(vehicle) {
+            selectedVehicle = vehicle;
+            const panel = document.getElementById('vehiclePanel');
+            const icon = vehicle.type === 'bike' ? '🚲' : '🛴';
+            const name = vehicle.type === 'bike' ? 'Bicicleta Elétrica' : 'Patinete Elétrico';
+
+            document.getElementById('panelTitle').textContent = `${icon} ${name}`;
+            
+            const details = `
+                <div class="vehicle-detail-item">
+                    <span class="detail-label">ID do Veículo</span>
+                    <span class="detail-value">#${vehicle.id.toString().padStart(4, '0')}</span>
+                </div>
+                <div class="vehicle-detail-item">
+                    <span class="detail-label">Bateria</span>
+                    <span class="detail-value">🔋 ${vehicle.battery}%</span>
+                </div>
+                <div class="vehicle-detail-item">
+                    <span class="detail-label">Distância estimada</span>
+                    <span class="detail-value">${Math.floor(vehicle.battery * 0.5)} km</span>
+                </div>
+                <div class="vehicle-detail-item">
+                    <span class="detail-label">Preço</span>
+                    <span class="detail-value">R$ ${vehicle.price.toFixed(2)} / 15 min</span>
+                </div>
+            `;
+
+            document.getElementById('vehicleDetails').innerHTML = details;
+            panel.classList.add('active');
+            map.setView([vehicle.lat, vehicle.lng], 16);
+        }
+
+        function closePanel() {
+            document.getElementById('vehiclePanel').classList.remove('active');
+            selectedVehicle = null;
+        }
+
+        function filterVehicles() {
+            const showBikes = document.getElementById('filterBike').checked;
+            const showScooters = document.getElementById('filterScooter').checked;
+
+            markers.forEach(({ marker, vehicle }) => {
+                if (vehicle.type === 'bike' && showBikes) {
+                    marker.addTo(map);
+                } else if (vehicle.type === 'scooter' && showScooters) {
+                    marker.addTo(map);
+                } else {
+                    map.removeLayer(marker);
+                }
+            });
+        }
+
+        function rentVehicle() {
+            if (!selectedVehicle) return;
+            localStorage.setItem('selectedVehicle', JSON.stringify(selectedVehicle));
+            window.location.href = 'pagamento.html';
+        }
+
+        function logout() {
+            if (confirm('Deseja realmente sair?')) {
+                localStorage.removeItem('eletromobUser');
+                window.location.href = 'login.html';
+            }
+        }
+
+        window.onload = function() {
+            const user = JSON.parse(localStorage.getItem('eletromobUser'));
+            if (!user || !user.loggedIn) {
+                alert('Você precisa fazer login primeiro!');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            document.getElementById('userName').textContent = user.name;
+            initMap();
+        };
+    </script>
+</body>
+</html>

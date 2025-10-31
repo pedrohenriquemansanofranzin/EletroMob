@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EletroMob - Índice do Sistema</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .pages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .page-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .page-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .page-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .page-features {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .page-features li {
+            padding: 0.3rem 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .page-features li:before {
+            content: "✓ ";
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .info-box h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .info-box p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .promo-codes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .promo-code {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 2px dashed #667eea;
+            text-align: center;
+        }
+
+        .promo-code-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.3rem;
+        }
+
+        .promo-code-desc {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .flow-diagram {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .flow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .flow-step {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .flow-number {
+            width: 50px;
+            height: 50px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 0.5rem;
+        }
+
+        .flow-arrow {
+            font-size: 2rem;
+            color: #667eea;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .flow-arrow {
+                display: none;
+            }
+
+            .flow-steps {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">⚡</div>
+            <h1>EletroMob</h1>
+            <p class="subtitle">Sistema de Aluguel de Veículos Elétricos</p>
+        </header>
+
+        <div class="info-box">
+            <h2>📋 Bem-vindo ao Sistema Completo!</h2>
+            <p>Este é um protótipo funcional completo do EletroMob. Navegue pelas páginas abaixo para experimentar todo o fluxo do usuário, desde o cadastro até o pagamento.</p>
+            <p><strong>Dica:</strong> Comece pela página inicial (Landing Page) e siga o fluxo natural do sistema!</p>
+        </div>
+
+        <div class="flow-diagram">
+            <h2 style="text-align: center; color: #667eea; margin-bottom: 2rem;">🗺️ Fluxo do Sistema</h2>
+            <div class="flow-steps">
+                <div class="flow-step">
+                    <div class="flow-number">1</div>
+                    <div style="font-weight: bold; color: #333;">Landing Page</div>
+                    <div style="font-size: 0.85rem; color: #666;">Conheça o serviço</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-number">2</div>
+                    <div style="font-weight: bold; color: #333;">Cadastro</div>
+                    <div style="font-size: 0.85rem; color: #666;">Crie sua conta</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-number">3</div>
+                    <div style="font-weight: bold; color: #333;">Mapa</div>
+                    <div style="font-size: 0.85rem; color: #666;">Encontre veículos</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-number">4</div>
+                    <div style="font-weight: bold; color: #333;">Seleção</div>
+                    <div style="font-size: 0.85rem; color: #666;">Confirme o veículo</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-number">5</div>
+                    <div style="font-weight: bold; color: #333;">Pagamento</div>
+                    <div style="font-size: 0.85rem; color: #666;">Finalize o aluguel</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 style="color: white; text-align: center; margin-bottom: 2rem; font-size: 2rem;">📱 Navegue pelas Páginas</h2>
+
+        <div class="pages-grid">
+            <a href="eletromob.html" class="page-card">
+                <div class="page-icon">🏠</div>
+                <div class="page-title">Landing Page</div>
+                <div class="page-description">
+                    Página inicial do EletroMob com informações sobre o serviço, veículos disponíveis e como funciona.
+                </div>
+                <ul class="page-features">
+                    <li>Design moderno e atraente</li>
+                    <li>Seção de veículos com preços</li>
+                    <li>Passo a passo de uso</li>
+                    <li>Vantagens do serviço</li>
+                </ul>
+                <span class="badge">COMEÇAR AQUI</span>
+            </a>
+
+            <a href="cadastro.html" class="page-card">
+                <div class="page-icon">✍️</div>
+                <div class="page-title">Cadastro / Login</div>
+                <div class="page-description">
+                    Sistema completo de autenticação com formulários de cadastro e login.
+                </div>
+                <ul class="page-features">
+                    <li>Formulário de cadastro completo</li>
+                    <li>Login com email e senha</li>
+                    <li>Login social (Google/Facebook)</li>
+                    <li>Validação de campos</li>
+                </ul>
+                <span class="badge">PASSO 1</span>
+            </a>
+
+            <a href="mapa.html" class="page-card">
+                <div class="page-icon">🗺️</div>
+                <div class="page-title">Mapa Interativo</div>
+                <div class="page-description">
+                    Visualize todos os veículos disponíveis no mapa com informações em tempo real.
+                </div>
+                <ul class="page-features">
+                    <li>Mapa real com Leaflet.js</li>
+                    <li>Marcadores de veículos</li>
+                    <li>Estações de devolução</li>
+                    <li>Filtros por tipo de veículo</li>
+                    <li>Lista lateral com detalhes</li>
+                </ul>
+                <span class="badge">PASSO 2</span>
+            </a>
+
+            <a href="selecao-veiculo.html" class="page-card">
+                <div class="page-icon">🚲</div>
+                <div class="page-title">Seleção de Veículo</div>
+                <div class="page-description">
+                    Visualize detalhes completos do veículo escolhido e selecione seu plano.
+                </div>
+                <ul class="page-features">
+                    <li>Informações técnicas</li>
+                    <li>QR Code para desbloqueio</li>
+                    <li>3 opções de plano</li>
+                    <li>Regras de segurança</li>
+                </ul>
+                <span class="badge">PASSO 3</span>
+            </a>
+
+            <a href="pagamento.html" class="page-card">
+                <div class="page-icon">💳</div>
+                <div class="page-title">Pagamento</div>
+                <div class="page-description">
+                    Finalize seu aluguel com múltiplas opções de pagamento seguro.
+                </div>
+                <ul class="page-features">
+                    <li>Cartão de crédito/débito</li>
+                    <li>PIX</li>
+                    <li>Saldo da carteira</li>
+                    <li>Códigos promocionais</li>
+                    <li>Resumo completo do pedido</li>
+                </ul>
+                <span class="badge">PASSO 4</span>
+            </a>
+
+            <a href="README.md" class="page-card" target="_blank">
+                <div class="page-icon">📖</div>
+                <div class="page-title">Documentação</div>
+                <div class="page-description">
+                    Guia completo com instruções, recursos e informações técnicas do sistema.
+                </div>
+                <ul class="page-features">
+                    <li>Instruções de uso</li>
+                    <li>Lista de recursos</li>
+                    <li>Códigos promocionais</li>
+                    <li>Informações técnicas</li>
+                </ul>
+                <span class="badge">LEIA-ME</span>
+            </a>
+        </div>
+
+        <div class="info-box">
+            <h2>🎁 Códigos Promocionais para Testar</h2>
+            <p>Use estes códigos na página de pagamento para ganhar desconto:</p>
+            <div class="promo-codes">
+                <div class="promo-code">
+                    <div class="promo-code-text">BEMVINDO</div>
+                    <div class="promo-code-desc">R$ 2,00 de desconto</div>
+                </div>
+                <div class="promo-code">
+                    <div class="promo-code-text">PRIMEIRAVIAGEM</div>
+                    <div class="promo-code-desc">R$ 2,00 de desconto</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h2>✨ Recursos Principais</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                <div>
+                    <strong style="color: #667eea;">🎨 Design Moderno</strong>
+                    <p style="margin-top: 0.3rem;">Interface clean com gradientes e animações suaves</p>
+                </div>
+                <div>
+                    <strong style="color: #667eea;">📱 Totalmente Responsivo</strong>
+                    <p style="margin-top: 0.3rem;">Funciona perfeitamente em mobile, tablet e desktop</p>
+                </div>
+                <div>
+                    <strong style="color: #667eea;">🗺️ Mapa Real</strong>
+                    <p style="margin-top: 0.3rem;">Integração com OpenStreetMap e geolocalização</p>
+                </div>
+                <div>
+                    <strong style="color: #667eea;">💳 Pagamentos Seguros</strong>
+                    <p style="margin-top: 0.3rem;">Múltiplos métodos de pagamento disponíveis</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>EletroMob</strong> - Sistema de Aluguel de Veículos Elétricos</p>
+            <p style="margin-top: 0.5rem; opacity: 0.8;">Protótipo funcional completo desenvolvido com HTML, CSS e JavaScript</p>
+            <p style="margin-top: 1rem;">⚡ 2025 - Mobilidade Elétrica Urbana</p>
+        </footer>
+    </div>
+</body>
+</html>
